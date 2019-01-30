@@ -1,0 +1,78 @@
+package com.springbootsoap.demo.service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.springbootsoap.demo.Entity.MovieEntity;
+import com.springbootsoap.demo.repo.MovieEntityRepository;
+
+@Service
+@Transactional
+public class MovieEntityServiceImpl implements MovieEntityService {
+	private MovieEntityRepository repository;
+
+	public MovieEntityServiceImpl() {
+
+	}
+
+	@Autowired
+	public MovieEntityServiceImpl(MovieEntityRepository repository) {
+		this.repository = repository;
+	}
+
+	@Override
+	public MovieEntity getEntityById(long id) {
+		return this.repository.findById(id).get();
+	}
+
+	@Override
+	public MovieEntity getEntityByTitle(String title) {
+		return this.repository.findByTitle(title);
+	}
+
+	@Override
+	public List<MovieEntity> getAllEntities() {
+		List<MovieEntity> list = new ArrayList<>();
+		repository.findAll().forEach(e -> list.add(e));
+		return list;
+	}
+
+	@Override
+	public MovieEntity addEntity(MovieEntity entity) {
+		try {
+			return this.repository.save(entity);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
+	}
+
+	@Override
+	public boolean updateEntity(MovieEntity entity) {
+		try {
+			this.repository.save(entity);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Override
+	public boolean deleteEntityById(long id) {
+		try {
+			this.repository.deleteById(id);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+
+	}
+
+}
